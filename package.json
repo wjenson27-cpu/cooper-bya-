@@ -1,0 +1,11 @@
+{
+  "name": "cooper-backyard-adventure",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8765 --bind 127.0.0.1",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}
