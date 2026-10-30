@@ -51,6 +51,7 @@ export class Game {
     this.viewH = 1;
     this.dpr = 1;
     this.cam = { x: 0, y: 0 };
+    this.closeup = false;
     this.save = loadSave();
     this.audio.setMuted(!!this.save.mute);
     this.onHud = () => {};
@@ -120,7 +121,9 @@ export class Game {
       y: def.start.y,
       r: 18,
       facing: -Math.PI / 2,
+      face: 1,
       anim: "idle",
+      happyT: 0,
       digT: 0,
       digBall: null,
       cycle: 0,
@@ -182,6 +185,7 @@ export class Game {
   sim(dt) {
     const p = this.player;
     if (p.wet > 0) p.wet -= dt;
+    if (p.happyT > 0) p.happyT = Math.max(0, p.happyT - dt);
     if (p.digT > 0) {
       p.digT -= dt;
       p.anim = "dig";
@@ -228,9 +232,10 @@ export class Game {
       p.x += x * speed * dt;
       p.y += y * speed * dt;
       p.facing = Math.atan2(y, x);
+      if (Math.abs(x) > 0.18) p.face = x > 0 ? 1 : -1;
       p.anim = "walk";
       p.cycle += dt * 11;
-      if (!this.reduced && Math.random() < 0.25) this.burst(p.x, p.y + 12, "dust", 1);
+      if (!this.reduced && Math.random() < 0.25) this.burst(p.x - p.face * 10, p.y + 14, "dust", 1);
     } else {
       p.anim = "idle";
     }
@@ -341,6 +346,7 @@ export class Game {
     buzz(28);
     this.burst(ball.x, ball.y, "spark", this.reduced ? 4 : 14);
     this.floater(ball.x, ball.y - 20, "Got it!");
+    this.player.happyT = 0.7;
     if (!this.reduced) this.shake = 2;
     this.onHud(this);
   }
@@ -484,6 +490,10 @@ export class Game {
     const ctx = this.ctx;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.viewW, this.viewH);
+    if (this.closeup) {
+      this.drawCloseup();
+      return;
+    }
     if (this.mode === "title" || this.mode === "select") {
       this.drawTitle();
       return;
@@ -542,18 +552,20 @@ export class Game {
       });
     }
     const napPose = this.mode === "complete" || this.player.anim === "nap";
+    const showHappy = this.player.happyT > 0 && !napPose && this.player.anim !== "dig";
     sprites.push({
-      y: this.player.y,
+      y: this.player.y + 16,
       draw: () =>
         drawCooper(ctx, this.player.x, this.player.y, {
           t: this.t,
           facing: this.player.facing,
-          anim: napPose ? "nap" : this.player.anim,
+          face: this.player.face,
+          anim: napPose ? "nap" : showHappy ? "happy" : this.player.anim,
           sit: napPose,
           cycle: this.player.cycle,
-          scale: 1.8,
+          scale: 1.32,
           reduced: this.reduced,
-          tilt: -0.08,
+          tilt: napPose ? -0.12 : -0.42,
         }),
     });
     sprites.sort((a, b) => a.y - b.y);
@@ -579,20 +591,44 @@ export class Game {
     const ctx = this.ctx;
     ctx.drawImage(this.titleBg, 0, 0, this.viewW, this.viewH);
     const land = this.viewW > this.viewH;
-    const cx = land ? this.viewW * 0.3 : this.viewW * 0.5;
-    const cy = land ? this.viewH * 0.62 : this.viewH * 0.48;
-    const scale = land ? Math.min(1.85, this.viewH / 250) : Math.min(2.45, this.viewW / 175);
+    const cx = land ? this.viewW * 0.28 : this.viewW * 0.48;
+    const cy = land ? this.viewH * 0.58 : this.viewH * 0.5;
+    const scale = land ? Math.min(1.45, this.viewH / 300) : Math.min(1.72, this.viewW / 250);
     drawCooper(ctx, cx, cy, {
       sit: true,
       lookUp: true,
-      tilt: -0.34,
+      tilt: -0.5,
+      face: 1,
       scale,
       t: this.t,
       reduced: this.reduced,
       anim: "sit",
     });
     const bob = this.reduced ? 0 : Math.sin(this.t * 2.4) * 4;
-    drawBall(ctx, cx + 62 * (scale / 2.2), cy + 34 * (scale / 2.2) + bob, 12 * (scale / 2), this.t);
+    drawBall(ctx, cx + 46 * scale, cy + 18 * scale + bob, 7 * scale, this.t);
+  }
+
+  drawCloseup() {
+    const ctx = this.ctx;
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    const w = this.viewW;
+    const h = this.viewH;
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#bfe6ff");
+    g.addColorStop(0.45, "#e7f6c8");
+    g.addColorStop(1, "#7ec84a");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    const scale = Math.min((w * 0.9) / 100, (h * 0.7) / 78);
+    drawCooper(ctx, w * 0.5, h * (w > h ? 0.56 : 0.5), {
+      anim: "walk",
+      face: 1,
+      facing: 0,
+      cycle: Math.PI / 2,
+      scale,
+      t: this.t,
+      reduced: false,
+    });
   }
 
   snapshot() {

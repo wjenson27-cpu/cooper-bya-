@@ -108,207 +108,6 @@ export function drawBall(ctx, x, y, r, t) {
   ctx.stroke();
 }
 
-function eye(ctx, x, y, lookX, lookY, s) {
-  ctx.fillStyle = "#fffaf3";
-  ellipse(ctx, x, y, 4.3 * s, 4.6 * s);
-  ctx.fill();
-  ctx.fillStyle = "#a86b3a";
-  ctx.beginPath();
-  ctx.arc(x + lookX, y + lookY, 2.55 * s, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#6b3e1e";
-  ctx.beginPath();
-  ctx.arc(x + lookX, y + lookY, 2.55 * s, 0, Math.PI * 2);
-  ctx.globalAlpha = 0.35;
-  ctx.fill();
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = "#241208";
-  ctx.beginPath();
-  ctx.arc(x + lookX * 1.05, y + lookY * 1.05, 1.45 * s, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#fff";
-  ctx.beginPath();
-  ctx.arc(x + lookX - 1.15 * s, y + lookY - 1.25 * s, 0.85 * s, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-function closedEye(ctx, x, y, s) {
-  ctx.strokeStyle = "#1a1a1a";
-  ctx.lineWidth = 1.4 * s;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.arc(x, y, 3.1 * s, 0.15 * Math.PI, 0.85 * Math.PI);
-  ctx.stroke();
-}
-
-function bandana(ctx, x, y, s, nap) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(s, s);
-  ctx.fillStyle = "#d32f2f";
-  ctx.beginPath();
-  ctx.moveTo(-11, -1);
-  ctx.quadraticCurveTo(0, 4, 11, -1);
-  ctx.quadraticCurveTo(4, 8, 0, 14);
-  ctx.quadraticCurveTo(-4, 8, -11, -1);
-  ctx.fill();
-  ctx.fillStyle = "#b71c1c";
-  ctx.beginPath();
-  ctx.moveTo(-3, 2);
-  ctx.lineTo(0, 13);
-  ctx.lineTo(3, 2);
-  ctx.fill();
-  ctx.fillStyle = "#c62828";
-  ctx.beginPath();
-  ctx.arc(0, 0, 3.4, 0, Math.PI * 2);
-  ctx.fill();
-  if (!nap) {
-    ctx.fillStyle = "#f2c14d";
-    ctx.beginPath();
-    ctx.arc(0, 8.5, 3.3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#a87420";
-    ctx.beginPath();
-    ctx.arc(0, 9.2, 1.15, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(-1.3, 7.6, 0.55, 0, Math.PI * 2);
-    ctx.arc(1.3, 7.6, 0.55, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-function ear(ctx, x, y, rot, flop) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(rot + flop);
-  glossy(ctx, 0, 8, 7.5, 13);
-  ellipse(ctx, 0, 8, 7.2, 12.5);
-  ctx.fill();
-  ctx.fillStyle = "#3a2c2c";
-  ellipse(ctx, 0.6, 9, 3.4, 7);
-  ctx.fill();
-  ctx.restore();
-}
-
-export function drawCooper(ctx, x, y, o) {
-  const t = o.t || 0;
-  const reduced = !!o.reduced;
-  const sit = !!o.sit || o.anim === "sit" || o.anim === "nap";
-  const nap = o.anim === "nap";
-  const scale = o.scale || 1;
-  const facing = o.facing == null ? -Math.PI / 2 : o.facing;
-  const fx = Math.cos(facing);
-  const fy = Math.sin(facing);
-  const cycle = o.cycle || 0;
-  const walk = !sit && o.anim === "walk" && !reduced;
-  const dig = o.anim === "dig";
-  const wag = reduced ? 0.2 : Math.sin(t * (sit ? 6 : 8));
-  const breathe = reduced ? 0 : Math.sin(t * 2.1) * 0.012;
-
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(scale, scale);
-
-  ctx.fillStyle = "rgba(70,45,20,0.18)";
-  ellipse(ctx, 0, sit ? 20 : 16, sit ? 24 : 18, 7);
-  ctx.fill();
-
-  let sx = 1 + breathe;
-  let sy = 1 - breathe;
-  if (walk) {
-    const p = Math.abs(Math.sin(cycle));
-    sx += p * 0.07;
-    sy -= p * 0.06;
-  }
-  if (dig && !reduced) {
-    const d = Math.sin(t * 22);
-    sx += 0.08 + d * 0.03;
-    sy -= 0.08 + d * 0.02;
-  }
-  ctx.scale(sx, sy);
-
-  if (!reduced) {
-    ctx.shadowColor = "rgba(255, 220, 170, 0.45)";
-    ctx.shadowBlur = 6;
-  }
-
-  if (sit) {
-    drawSit(ctx, t, o.tilt || 0, reduced, !!o.lookUp, nap, wag);
-  } else {
-    drawStand(ctx, fx, fy, cycle, wag, dig, t, reduced);
-  }
-  ctx.restore();
-}
-
-function drawSit(ctx, t, tilt, reduced, lookUp, nap, wag) {
-  ctx.save();
-  ctx.translate(-24, 2);
-  ctx.rotate(-0.8 + wag * 0.45);
-  glossy(ctx, 10, 0, 8, 16);
-  ellipse(ctx, 10, 0, 7.5, 15, 0.2);
-  ctx.fill();
-  ctx.restore();
-
-  glossy(ctx, 0, 8, 28, 18);
-  ellipse(ctx, 0, 8, 27, 17);
-  ctx.fill();
-  ctx.shadowBlur = 0;
-
-  ctx.fillStyle = "#1a1a1a";
-  roundLimb(ctx, -10, 8, -12, 26, 5.2);
-  roundLimb(ctx, 10, 8, 12, 26, 5.2);
-  ctx.fillStyle = "#111";
-  ellipse(ctx, -12, 28, 6.5, 3.4);
-  ctx.fill();
-  ellipse(ctx, 12, 28, 6.5, 3.4);
-  ctx.fill();
-
-  glossy(ctx, 2, -2, 16, 13);
-  ellipse(ctx, 2, -2, 15, 12);
-  ctx.fill();
-
-  bandana(ctx, 2, -6, 1, nap);
-
-  ctx.save();
-  ctx.translate(3, -24);
-  ctx.rotate(tilt + (reduced ? 0 : Math.sin(t * 1.4) * 0.03));
-  const flop = reduced ? 0 : Math.sin(t * 3) * 0.06;
-  ear(ctx, -15, -4, 0.35, flop);
-  ear(ctx, 15, -4, -0.35, -flop);
-  glossy(ctx, 0, 0, 20, 19);
-  ellipse(ctx, 0, 0, 19, 18);
-  ctx.fill();
-  ctx.fillStyle = "#2b2b2b";
-  ellipse(ctx, 1, 7, 9, 6.5);
-  ctx.fill();
-  const lookY = nap ? 0 : lookUp ? -2.1 : -0.4;
-  const lookX = nap ? 0 : -0.4;
-  if (nap) {
-    closedEye(ctx, -7, -2, 1);
-    closedEye(ctx, 7, -2, 1);
-  } else {
-    eye(ctx, -7, -2, lookX, lookY, 1.05);
-    eye(ctx, 7, -2, lookX, lookY, 1.05);
-  }
-  ctx.fillStyle = "#0e0e0e";
-  ellipse(ctx, 1, 6.5, 3.3, 2.4);
-  ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ellipse(ctx, 0.1, 5.6, 1.1, 0.6);
-  ctx.fill();
-  if (!nap) {
-    ctx.fillStyle = "#f3a3b5";
-    ellipse(ctx, 2.5, 12, 4.2, 5.4);
-    ctx.fill();
-    ctx.fillStyle = "#e48498";
-    ellipse(ctx, 2.8, 13.2, 2.2, 2.6);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
 function roundLimb(ctx, x1, y1, x2, y2, r) {
   const ang = Math.atan2(y2 - y1, x2 - x1);
   ctx.save();
@@ -316,83 +115,375 @@ function roundLimb(ctx, x1, y1, x2, y2, r) {
   ctx.rotate(ang);
   const len = Math.hypot(x2 - x1, y2 - y1);
   ctx.beginPath();
-  ctx.ellipse(len / 2, 0, len / 2, r, 0, 0, Math.PI * 2);
+  ctx.ellipse(len / 2, 0, Math.max(0.5, len / 2), r, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
 
-function drawStand(ctx, fx, fy, cycle, wag, dig, t, reduced) {
-  const bodyX = -fx * 7;
-  const bodyY = -fy * 5;
-  const headX = fx * 13 + (dig ? fx * 2 : 0);
-  const headY = fy * 11 + (dig ? 6 : 0);
-  const sideX = -fy;
-  const sideY = fx;
-  const stride = walkStride(cycle);
+function coat(ctx, x, y, rx, ry) {
+  const g = ctx.createLinearGradient(x - rx, y - ry, x + rx * 0.4, y + ry);
+  g.addColorStop(0, "#6a6a6a");
+  g.addColorStop(0.22, "#3a3a3a");
+  g.addColorStop(0.62, "#1a1a1a");
+  g.addColorStop(1, "#070707");
+  ctx.fillStyle = g;
+}
 
-  ctx.save();
-  ctx.translate(bodyX - fx * 8, bodyY - fy * 6);
-  ctx.rotate(Math.atan2(fy, fx) + Math.PI * 0.82 + wag * 0.45);
-  glossy(ctx, 9, 0, 7, 11);
-  ellipse(ctx, 9, 0, 6.5, 10);
+function paintPaw(ctx, x, y, w) {
+  ctx.fillStyle = "#101010";
+  ellipse(ctx, x, y, w, w * 0.46);
   ctx.fill();
-  ctx.restore();
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.35, y - 0.4);
+  ctx.lineTo(x - w * 0.15, y + w * 0.25);
+  ctx.moveTo(x + w * 0.05, y - 0.6);
+  ctx.lineTo(x + w * 0.05, y + w * 0.28);
+  ctx.stroke();
+}
 
-  const paws = [
-    [bodyX + sideX * 8 - fx * (4 + stride), bodyY + sideY * 8 - fy * (4 + stride)],
-    [bodyX - sideX * 8 + fx * (4 + stride), bodyY - sideY * 8 + fy * (4 + stride)],
-    [bodyX + sideX * 7 + fx * (6 - stride), bodyY + sideY * 7 + fy * (6 - stride)],
-    [bodyX - sideX * 7 - fx * (6 - stride), bodyY - sideY * 7 - fy * (6 - stride)],
-  ];
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = "#121212";
-  for (const [px, py] of paws) {
-    roundLimb(ctx, bodyX + (px - bodyX) * 0.3, bodyY + (py - bodyY) * 0.3, px, py, 3.6);
-    ellipse(ctx, px, py, 4.6, 3.2);
+function labLeg(ctx, hipX, hipY, phase, cycle, moving, thick) {
+  const s = moving ? Math.sin(cycle + phase) : 0;
+  const swing = s * 9;
+  const lift = Math.max(0, s) * 5.5;
+  const pawX = hipX + swing;
+  const pawY = 16 - lift;
+  const kneeX = hipX + swing * 0.42;
+  const kneeY = hipY + (pawY - hipY) * 0.55;
+  coat(ctx, hipX, hipY, thick, thick * 0.8);
+  roundLimb(ctx, hipX, hipY, kneeX, kneeY, thick);
+  roundLimb(ctx, kneeX, kneeY, pawX, pawY - 2, thick * 0.78);
+  coat(ctx, pawX, pawY, thick, thick * 0.5);
+  ellipse(ctx, pawX, pawY, thick * 1.15, thick * 0.52);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.2)";
+  ctx.lineWidth = 0.9;
+  ctx.beginPath();
+  ctx.moveTo(pawX - thick * 0.45, pawY - 0.2);
+  ctx.lineTo(pawX - thick * 0.15, pawY + thick * 0.32);
+  ctx.moveTo(pawX + thick * 0.18, pawY - 0.2);
+  ctx.lineTo(pawX + thick * 0.18, pawY + thick * 0.34);
+  ctx.stroke();
+}
+
+function otterTail(ctx, wag, tuck) {
+  ctx.save();
+  if (tuck) {
+    ctx.translate(-10, 2);
+    ctx.rotate(Math.PI * 0.78 + wag);
+  } else {
+    ctx.translate(-18, -8);
+    ctx.rotate(Math.PI - 0.5 + wag);
+  }
+  const parts = tuck
+    ? [[0, 0, 9, 7], [7, 1, 7.2, 5.6], [13, 2, 5.4, 4.2], [18, 3, 3.8, 3]]
+    : [[0, 0, 10, 8], [7, -0.4, 8.6, 6.8], [13, -0.8, 7.2, 5.6], [19, -1, 5.8, 4.5], [24, -0.8, 4.4, 3.4], [28, -0.4, 3.2, 2.5]];
+  for (const [x, y, rx, ry] of parts) {
+    coat(ctx, x, y, rx, ry);
+    ellipse(ctx, x, y, rx, ry);
     ctx.fill();
   }
+  ctx.restore();
+}
 
-  glossy(ctx, bodyX, bodyY, 18, 13);
-  ellipse(ctx, bodyX, bodyY, 17, 12.5);
+function labTorso(ctx) {
+  coat(ctx, 0, -4, 28, 16);
+  ctx.beginPath();
+  ctx.moveTo(-22, -13);
+  ctx.quadraticCurveTo(-2, -20, 16, -14);
+  ctx.quadraticCurveTo(30, -10, 27, -1);
+  ctx.quadraticCurveTo(30, 6, 16, 9);
+  ctx.quadraticCurveTo(2, 12, -12, 8);
+  ctx.quadraticCurveTo(-28, 6, -27, -4);
+  ctx.quadraticCurveTo(-28, -10, -22, -13);
+  ctx.closePath();
   ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,0.3)";
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(-14, -12);
+  ctx.quadraticCurveTo(2, -16, 16, -11);
+  ctx.stroke();
+}
 
-  bandana(ctx, (bodyX + headX) / 2, (bodyY + headY) / 2 + 2, 0.78, false);
-
-  const flop = reduced ? 0 : Math.sin(cycle * 2) * 0.18;
-  ctx.save();
-  ctx.translate(headX, headY);
-  ear(ctx, -12, -2, 0.4 + fy * 0.2, flop);
-  ear(ctx, 12, -2, -0.4 - fy * 0.2, -flop);
-  glossy(ctx, 0, dig ? 2 : 0, 15, 14.5);
-  ellipse(ctx, 0, dig ? 2 : 0, 14.2, 13.6);
-  ctx.fill();
-  ctx.fillStyle = "#2a2a2a";
-  ellipse(ctx, fx * 2, 5, 7, 5);
-  ctx.fill();
-  const lookX = fx * 0.8;
-  const lookY = fy * 0.5 - 0.3;
-  if (dig) {
-    eye(ctx, -5.5, 1, 0, 1.4, 0.85);
-    eye(ctx, 5.5, 1, 0, 1.4, 0.85);
-  } else {
-    eye(ctx, -5.6, -1.5, lookX, lookY, 0.92);
-    eye(ctx, 5.6, -1.5, lookX, lookY, 0.92);
+function profileEye(ctx, x, y, lookX, lookY, closed) {
+  if (closed) {
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(x, y, 3.2, 0.2 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+    return;
   }
-  ctx.fillStyle = "#0e0e0e";
-  ellipse(ctx, fx * 1.5, 4.6, 2.6, 1.9);
+  ctx.fillStyle = "#fffaf2";
+  ellipse(ctx, x, y, 4.6, 5);
   ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ellipse(ctx, fx * 1.2, 4, 0.8, 0.45);
+  ctx.fillStyle = "#c48448";
+  ctx.beginPath();
+  ctx.arc(x + lookX, y + lookY, 2.8, 0, Math.PI * 2);
   ctx.fill();
-  const tongue = dig ? 0.6 : 1;
-  ctx.fillStyle = "#f3a3b5";
-  ellipse(ctx, fx * 2, 9 + Math.sin(t * 7) * (reduced ? 0 : 0.6), 3.3 * tongue, 4.2 * tongue);
+  ctx.fillStyle = "#6b3a18";
+  ctx.beginPath();
+  ctx.arc(x + lookX, y + lookY, 2.8, 0.1, Math.PI * 0.9);
+  ctx.fill();
+  ctx.fillStyle = "#1a0c08";
+  ctx.beginPath();
+  ctx.arc(x + lookX * 1.1, y + lookY, 1.55, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.arc(x + lookX - 1.2, y + lookY - 1.3, 0.9, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function floppyEar(ctx, x, y, rot, len) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  coat(ctx, 0, len * 0.45, 7, len * 0.5);
+  ellipse(ctx, 0, len * 0.45, 6.4, len * 0.48);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.28)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = "#3d2c2c";
+  ellipse(ctx, 1, len * 0.5, 3, len * 0.28);
   ctx.fill();
   ctx.restore();
 }
 
-function walkStride(cycle) {
-  return Math.sin(cycle) * 3.5;
+function neckBandana(ctx, x, y, nap) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = "#d32f2f";
+  ctx.beginPath();
+  ctx.moveTo(-8, -4);
+  ctx.quadraticCurveTo(0, 2, 9, -5);
+  ctx.lineTo(4, 7);
+  ctx.quadraticCurveTo(0, 12, -3, 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#b71c1c";
+  ctx.fillRect(-1.2, -2, 2.4, 10);
+  ctx.fillStyle = "#c62828";
+  ctx.beginPath();
+  ctx.arc(0, -3, 2.6, 0, Math.PI * 2);
+  ctx.fill();
+  if (!nap) {
+    ctx.fillStyle = "#e8b43a";
+    ctx.beginPath();
+    ctx.arc(1, 8, 3.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#a87420";
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.arc(1, 8.4, 1.1, 0, Math.PI * 2);
+    ctx.moveTo(-0.2, 6.8);
+    ctx.arc(-0.2, 6.8, 0.45, 0, Math.PI * 2);
+    ctx.moveTo(2.2, 6.8);
+    ctx.arc(2.2, 6.8, 0.45, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "#fff3c4";
+    ctx.beginPath();
+    ctx.arc(0.1, 7.1, 0.7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function sideHead(ctx, o) {
+  const t = o.t || 0;
+  const reduced = !!o.reduced;
+  const dig = o.anim === "dig";
+  const happy = o.anim === "happy";
+  const nap = o.anim === "nap";
+  const flop = reduced ? 0 : Math.sin((o.cycle || 0) * 2) * (o.anim === "walk" ? 0.18 : 0.05);
+  floppyEar(ctx, 6, -30, 0.35 + flop, dig ? 14 : 20);
+  coat(ctx, 16, -24, 13, 11);
+  ellipse(ctx, 16, -24, 12.5, 10.5);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.35)";
+  ctx.lineWidth = 1.3;
+  ctx.stroke();
+  ctx.fillStyle = "#2c2c2c";
+  ellipse(ctx, 30, -17, 12, 6.6);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.28)";
+  ctx.stroke();
+  ctx.fillStyle = "#242424";
+  ellipse(ctx, 26, -14, 7, 4.2);
+  ctx.fill();
+  ctx.fillStyle = "#0c0c0c";
+  ellipse(ctx, 41, -17.5, 3.8, 3.2);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  ellipse(ctx, 37, -19.6, 1.1, 0.6);
+  ctx.fill();
+  const lookY = dig ? 1.6 : happy ? -0.4 : -0.2;
+  profileEye(ctx, 18, -27, 0.4, lookY, nap);
+  if (!nap) {
+    const hang = dig ? 2.2 : 5.2 + (reduced ? 0 : Math.sin(t * 7) * 0.5);
+    ctx.fillStyle = "#f3a3b5";
+    ellipse(ctx, 30, -12 + hang * 0.15, 3.4, hang);
+    ctx.fill();
+    ctx.fillStyle = "#e07a90";
+    ellipse(ctx, 30.4, -10.5 + hang * 0.2, 1.6, hang * 0.45);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(8, -30);
+  ctx.quadraticCurveTo(16, -34, 24, -28);
+  ctx.stroke();
+}
+
+function drawSideLab(ctx, o) {
+  const t = o.t || 0;
+  const reduced = !!o.reduced;
+  const moving = o.anim === "walk" || o.anim === "happy";
+  const happy = o.anim === "happy";
+  const cycle = moving ? o.cycle || 0 : 0;
+  const wag = reduced ? 0.2 : Math.sin(t * (happy ? 16 : moving ? 9 : 4.5)) * (happy ? 0.7 : 0.45);
+  const bob = moving && !reduced ? Math.abs(Math.sin(cycle * 2)) * 2.4 : 0;
+  const hop = happy && !reduced ? Math.abs(Math.sin(t * 12)) * 8 : 0;
+  const breathe = reduced ? 1 : 1 + Math.sin(t * 2.2) * 0.015;
+  const squash = happy && !reduced ? 1 + Math.sin(t * 12) * 0.06 : 1;
+
+  ctx.fillStyle = "rgba(50,35,15,0.2)";
+  ellipse(ctx, 2, 20, 28, 6);
+  ctx.fill();
+
+  ctx.save();
+  ctx.translate(0, -bob - hop);
+  ctx.scale(squash * breathe, (2 - squash) * breathe);
+
+  labLeg(ctx, -16, -4, Math.PI, cycle, moving, 5.4);
+  labLeg(ctx, 10, -4, 0, cycle, moving, 5.4);
+
+  labTorso(ctx);
+  otterTail(ctx, wag, false);
+
+  labLeg(ctx, -8, -6, 0, cycle, moving, 7);
+  labLeg(ctx, 18, -6, Math.PI, cycle, moving, 7);
+
+  coat(ctx, 16, -12, 8, 7);
+  roundLimb(ctx, 14, -8, 20, -18, 7);
+  neckBandana(ctx, 16, -12, false);
+  sideHead(ctx, o);
+  ctx.restore();
+}
+
+function drawDigLab(ctx, o) {
+  const t = o.t || 0;
+  const reduced = !!o.reduced;
+  const scratch = reduced ? 0 : Math.sin(t * 22);
+  const wag = reduced ? 0.2 : Math.sin(t * 10) * 0.35;
+  ctx.fillStyle = "rgba(50,35,15,0.2)";
+  ellipse(ctx, 4, 18, 26, 6);
+  ctx.fill();
+  ctx.save();
+  ctx.rotate(-0.42);
+  otterTail(ctx, wag + 0.4, false);
+  labLeg(ctx, -16, 0, 0, 0, false, 3.4, "#0c0c0c");
+  coat(ctx, -4, -2, 22, 12);
+  ellipse(ctx, -4, -2, 21, 11.5);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.3)";
+  ctx.stroke();
+  labLeg(ctx, -12, 2, 0.4, 0, false, 4.2, "#161616");
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(18, 6);
+  ctx.rotate(0.55);
+  neckBandana(ctx, -2, -6, false);
+  sideHead(ctx, { ...o, anim: "dig" });
+  ctx.restore();
+
+  const pawY = 14 - Math.max(0, scratch) * 4;
+  ctx.fillStyle = "#141414";
+  roundLimb(ctx, 10, 2, 22 + scratch * 3, pawY, 3.6);
+  roundLimb(ctx, 16, 4, 28 - scratch * 3, pawY + 1, 3.4);
+  paintPaw(ctx, 24 + scratch * 4, pawY + 2, 5);
+  paintPaw(ctx, 30 - scratch * 3, pawY + 3, 4.6);
+}
+
+function drawBegLab(ctx, o) {
+  const t = o.t || 0;
+  const reduced = !!o.reduced;
+  const nap = o.anim === "nap";
+  const tilt = (o.tilt == null ? -0.48 : o.tilt) + (reduced ? 0 : Math.sin(t * 1.5) * 0.04);
+  const wag = reduced ? 0.15 : Math.sin(t * 6) * 0.4;
+  ctx.fillStyle = "rgba(50,35,15,0.2)";
+  ellipse(ctx, 0, 26, 26, 7);
+  ctx.fill();
+
+  coat(ctx, -6, 6, 18, 14);
+  ellipse(ctx, -6, 6, 17, 13);
+  ctx.fill();
+  otterTail(ctx, wag, true);
+  paintPaw(ctx, -18, 18, 5.2);
+
+  labLeg(ctx, -8, -12, 0, 0, false, 5.6);
+  labLeg(ctx, 12, -12, 0.4, 0, false, 5.6);
+
+  coat(ctx, 2, -10, 14, 16);
+  ellipse(ctx, 2, -10, 13, 15);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.28)";
+  ctx.stroke();
+  neckBandana(ctx, 2, -2, nap);
+
+  ctx.save();
+  ctx.translate(4, -28);
+  ctx.rotate(tilt);
+  floppyEar(ctx, -14, -6, 0.55, 15);
+  floppyEar(ctx, 12, -8, -0.2, 14);
+  coat(ctx, 0, 0, 15, 13);
+  ellipse(ctx, 0, 0, 14.5, 12.5);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.35)";
+  ctx.lineWidth = 1.3;
+  ctx.stroke();
+  ctx.fillStyle = "#2a2a2a";
+  ellipse(ctx, 8, 8, 10, 6.5);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(0,0,0,0.25)";
+  ctx.stroke();
+  ctx.fillStyle = "#0c0c0c";
+  ellipse(ctx, 16, 8, 3.8, 3.1);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.7)";
+  ellipse(ctx, 15, 7, 1.1, 0.6);
+  ctx.fill();
+  const up = nap ? 0 : -1.8;
+  profileEye(ctx, -5, -3, -0.2, up, nap);
+  profileEye(ctx, 6, -4, 0.2, up, nap);
+  if (!nap) {
+    ctx.fillStyle = "#f3a3b5";
+    ellipse(ctx, 10, 14, 3.6, 4.4);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+export function drawCooper(ctx, x, y, o) {
+  const facing = o.facing == null ? 0 : o.facing;
+  const face = o.face != null ? o.face : Math.cos(facing) >= 0 ? 1 : -1;
+  const scale = o.scale || 1;
+  const sit = !!o.sit || o.anim === "sit" || o.anim === "nap";
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(face < 0 ? -scale : scale, scale);
+  if (sit) drawBegLab(ctx, o);
+  else if (o.anim === "dig") drawDigLab(ctx, o);
+  else drawSideLab(ctx, o);
+  ctx.restore();
 }
 
 export function drawSquirrel(ctx, x, y, o) {

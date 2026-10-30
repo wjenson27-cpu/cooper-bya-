@@ -297,6 +297,19 @@ window.__game = {
   snapshot: () => game.snapshot(),
   setStick: (x, y) => game.setStick(x, y),
   tapAction: () => game.tapAction(),
+  setCloseup(on) {
+    game.closeup = !!on;
+    if (on) {
+      document.body.dataset.mode = "closeup";
+      el.title.classList.add("hidden");
+      el.select.classList.add("hidden");
+      el.complete.classList.add("hidden");
+      el.pause.classList.add("hidden");
+      el.help.classList.add("hidden");
+    } else {
+      show(game.mode);
+    }
+  },
 };
 
 if (!location.search.includes("nosw=1") && "serviceWorker" in navigator) {

@@ -1,4 +1,4 @@
-const CACHE = "cooper-bya-v1";
+const CACHE = "cooper-bya-v2";
 const CORE = [
   "./",
   "./index.html",

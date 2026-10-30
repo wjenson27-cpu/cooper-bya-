@@ -94,31 +94,28 @@ function drawIcon(size, maskable) {
   const data = Buffer.alloc(size * size * 4);
   const bg = maskable ? [255, 214, 170] : [255, 246, 232];
   fill(data, size, size, bg[0], bg[1], bg[2]);
-  if (!maskable) {
-    circle(data, size, size * 0.5, size * 0.5, size * 0.48, 255, 236, 214);
-  }
   const s = size / 512;
-  const cx = size * 0.5;
-  const cy = size * (maskable ? 0.56 : 0.58);
-  ellipse(data, size, cx, cy + 70 * s, 120 * s, 90 * s, 22, 22, 22);
-  ellipse(data, size, cx - 108 * s, cy - 10 * s, 42 * s, 78 * s, 18, 18, 18);
-  ellipse(data, size, cx + 108 * s, cy - 10 * s, 42 * s, 78 * s, 18, 18, 18);
-  circle(data, size, cx, cy - 40 * s, 108 * s, 28, 28, 28);
-  circle(data, size, cx - 20 * s, cy - 78 * s, 28 * s, 90, 90, 90);
-  ellipse(data, size, cx + 6 * s, cy - 8 * s, 48 * s, 34 * s, 42, 42, 42);
-  circle(data, size, cx - 36 * s, cy - 58 * s, 18 * s, 255, 250, 243);
-  circle(data, size, cx + 28 * s, cy - 58 * s, 18 * s, 255, 250, 243);
-  circle(data, size, cx - 34 * s, cy - 56 * s, 10 * s, 154, 98, 54);
-  circle(data, size, cx + 30 * s, cy - 56 * s, 10 * s, 154, 98, 54);
-  circle(data, size, cx - 36 * s, cy - 60 * s, 4 * s, 255, 255, 255);
-  circle(data, size, cx + 28 * s, cy - 60 * s, 4 * s, 255, 255, 255);
-  ellipse(data, size, cx + 4 * s, cy - 18 * s, 16 * s, 12 * s, 14, 14, 14);
-  ellipse(data, size, cx + 12 * s, cy + 8 * s, 18 * s, 22 * s, 243, 163, 181);
-  ellipse(data, size, cx, cy + 78 * s, 54 * s, 36 * s, 227, 57, 53);
-  circle(data, size, size * 0.78, size * 0.78, 36 * s, 255, 122, 26);
-  for (let i = -1; i <= 1; i += 2) {
-    ellipse(data, size, size * 0.78 + i * 8 * s, size * 0.78, 10 * s, 28 * s, 42, 98, 230);
-  }
+  const y = size * (maskable ? 0.56 : 0.54);
+  ellipse(data, size, 150 * s, y + 10 * s, 70 * s, 28 * s, 20, 20, 20);
+  ellipse(data, size, 250 * s, y, 120 * s, 70 * s, 22, 22, 22);
+  ellipse(data, size, 210 * s, y + 78 * s, 16 * s, 36 * s, 16, 16, 16);
+  ellipse(data, size, 280 * s, y + 78 * s, 16 * s, 36 * s, 16, 16, 16);
+  ellipse(data, size, 250 * s, y + 78 * s, 14 * s, 34 * s, 12, 12, 12);
+  ellipse(data, size, 360 * s, y - 36 * s, 28 * s, 46 * s, 18, 18, 18);
+  ellipse(data, size, 390 * s, y - 20 * s, 62 * s, 48 * s, 28, 28, 28);
+  ellipse(data, size, 450 * s, y - 4 * s, 48 * s, 28 * s, 36, 36, 36);
+  ellipse(data, size, 492 * s, y - 6 * s, 16 * s, 14 * s, 12, 12, 12);
+  circle(data, size, 488 * s, y - 10 * s, 5 * s, 255, 255, 255);
+  ellipse(data, size, 400 * s, y - 36 * s, 16 * s, 18 * s, 255, 250, 243);
+  circle(data, size, 404 * s, y - 34 * s, 8 * s, 166, 98, 48);
+  circle(data, size, 405 * s, y - 35 * s, 4 * s, 20, 10, 6);
+  circle(data, size, 400 * s, y - 40 * s, 3 * s, 255, 255, 255);
+  ellipse(data, size, 446 * s, y + 16 * s, 12 * s, 16 * s, 243, 163, 181);
+  ellipse(data, size, 330 * s, y + 8 * s, 22 * s, 16 * s, 227, 57, 53);
+  circle(data, size, 338 * s, y + 22 * s, 10 * s, 242, 193, 77);
+  circle(data, size, 70 * s, y + 70 * s, 28 * s, 255, 122, 26);
+  ellipse(data, size, 62 * s, y + 70 * s, 8 * s, 22 * s, 42, 98, 230);
+  ellipse(data, size, 82 * s, y + 70 * s, 8 * s, 22 * s, 42, 98, 230);
   return encodePNG(size, size, data);
 }
 

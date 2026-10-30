@@ -123,6 +123,15 @@ test("title, select, play, and complete screenshots", async ({ page }) => {
   await shot(page, "title-landscape");
 
   await page.setViewportSize(PORTRAIT);
+  await page.evaluate(() => window.__game.setCloseup(true));
+  await page.waitForTimeout(250);
+  await shot(page, "cooper-closeup-portrait");
+  await page.setViewportSize(LANDSCAPE);
+  await page.waitForTimeout(200);
+  await shot(page, "cooper-closeup-landscape");
+  await page.evaluate(() => window.__game.setCloseup(false));
+
+  await page.setViewportSize(PORTRAIT);
   await page.click("#play");
   await expect(page.locator("#select")).toBeVisible();
   await page.waitForTimeout(100);
@@ -134,9 +143,8 @@ test("title, select, play, and complete screenshots", async ({ page }) => {
   await page.setViewportSize(PORTRAIT);
   await page.click('[data-level="1"]');
   await page.waitForFunction(() => window.__game.snapshot().mode === "play");
-  await page.evaluate(() => window.__game.setStick(0, -1));
-  await page.waitForTimeout(350);
-  await page.evaluate(() => window.__game.setStick(0, 0));
+  await page.evaluate(() => window.__game.setStick(1, 0));
+  await page.waitForTimeout(320);
   await shot(page, "play-portrait");
   const dig = await page.locator("#dig").boundingBox();
   const pause = await page.locator("#pause-btn").boundingBox();
@@ -152,6 +160,7 @@ test("title, select, play, and complete screenshots", async ({ page }) => {
   expect(digL.width).toBeGreaterThanOrEqual(44);
   expect(digL.height).toBeGreaterThanOrEqual(44);
 
+  await page.evaluate(() => window.__game.setStick(0, 0));
   await page.setViewportSize(PORTRAIT);
   const done = await completeLevel(page);
   expect(done.found).toBe(3);

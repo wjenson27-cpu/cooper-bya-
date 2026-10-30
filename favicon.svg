@@ -1,17 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect width="64" height="64" rx="14" fill="#fff6e8"/>
-  <ellipse cx="32" cy="40" rx="18" ry="14" fill="#1a1a1a"/>
-  <circle cx="32" cy="26" r="14" fill="#1c1c1c"/>
-  <ellipse cx="16" cy="30" rx="6" ry="10" fill="#141414"/>
-  <ellipse cx="48" cy="30" rx="6" ry="10" fill="#141414"/>
-  <ellipse cx="32" cy="30" rx="8" ry="6" fill="#2a2a2a"/>
-  <circle cx="26" cy="24" r="3.2" fill="#fff8ee"/>
-  <circle cx="38" cy="24" r="3.2" fill="#fff8ee"/>
-  <circle cx="26.4" cy="24.2" r="1.8" fill="#8a5428"/>
-  <circle cx="38.4" cy="24.2" r="1.8" fill="#8a5428"/>
-  <circle cx="26.2" cy="23.6" r="0.7" fill="#fff"/>
-  <circle cx="38.2" cy="23.6" r="0.7" fill="#fff"/>
-  <ellipse cx="32" cy="29" rx="2.4" ry="1.8" fill="#111"/>
-  <path d="M30 32 Q32 36 35 33 Q33 35 30 32" fill="#f3a3b5"/>
-  <path d="M24 36 L32 46 L40 36 Z" fill="#e53935"/>
+  <ellipse cx="18" cy="40" rx="8" ry="5" fill="#1a1a1a"/>
+  <path d="M14 38c8 2 16-2 20-1 2 4-2 8-10 8-6 0-12-3-10-7z" fill="#141414"/>
+  <ellipse cx="34" cy="36" rx="14" ry="9" fill="#1c1c1c"/>
+  <path d="M44 34c6 1 12 0 14 3 1 2-2 5-8 5-4 0-8-2-6-8z" fill="#222"/>
+  <circle cx="56" cy="35" r="3" fill="#111"/>
+  <circle cx="55" cy="34" r="0.8" fill="#fff"/>
+  <ellipse cx="40" cy="30" rx="3.2" ry="3.4" fill="#fff8ee"/>
+  <circle cx="41" cy="30.2" r="1.7" fill="#a86b3a"/>
+  <circle cx="41.2" cy="30.2" r="0.8" fill="#1a0c08"/>
+  <path d="M36 24c2 6-1 12-2 14 3-1 6-6 5-12-1-2-2-3-3-2z" fill="#141414"/>
+  <path d="M48 40c2 3 1 6-1 6-1 0-2-2-1-6z" fill="#f3a3b5"/>
+  <path d="M30 32l6 2-2 8-4-2z" fill="#e53935"/>
+  <circle cx="34" cy="40" r="2.2" fill="#f2c14d"/>
+  <rect x="24" y="42" width="3" height="10" rx="1.5" fill="#111"/>
+  <rect x="32" y="42" width="3" height="10" rx="1.5" fill="#111"/>
+  <rect x="40" y="42" width="3" height="9" rx="1.5" fill="#111"/>
 </svg>
